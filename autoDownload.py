@@ -52,6 +52,18 @@ class AutoDownloader:
         if res.ok: return ""
         soup = bs(res.content, features="lxml")
         return soup.find("title").text
+    
+    def record_download_history(self):
+        if os.path.exists(f"{self.download_path}/download_history.json"):
+            with open(f"{self.download_path}/download_history.json", 'r+', encoding='utf8') as f:
+                previous_record = json.load(f)
+                f.seek(0)
+                json.dump(previous_record | self.dicOfLinks, f, ensure_ascii=False)
+        else:
+            with open(f"{self.download_path}/download_history.json", 'w', encoding='utf8') as f:
+                    json.dump(self.dicOfLinks, f, ensure_ascii=False)
+            
+        return
         
     def findLinks(self, fileType) -> None:
         
@@ -115,9 +127,7 @@ class AutoDownloader:
             self.download(file_name, url)
             i += 1
             
-        with open(f"{self.download_path}/download_history.json", 'a', encoding='utf8') as f:
-            json.dump(self.dicOfLinks, f, ensure_ascii=False)
-        
+        self.record_download_history()
         print("Download Complete")
         
         return
