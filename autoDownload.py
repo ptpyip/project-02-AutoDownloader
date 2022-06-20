@@ -5,6 +5,7 @@
 
 from bs4 import BeautifulSoup as bs
 import requests
+import pdfkit
 import json
 import os
 import sys
@@ -38,13 +39,18 @@ class AutoDownloader:
         
     def setAuth(self, auth):
         self.auth = auth
+        
+    def get(self, url):
+        if self.auth != None: 
+            res = requests.get(url, auth=self.auth)
+        else:
+            res = requests.get(url)
+        
+        return res
 
     def findLinks(self, fileType) -> None:
         
-        if self.auth != None: res = requests.get(self.tgt_url, auth=self.auth)
-        else:
-            res = requests.get(self.tgt_url)
-        
+        res = self.get(self.tgt_url)
         print(f"Getting responses from {self.tgt_url}")
 
         if (res.status_code != requests.codes.ok): sys.exit(res.raise_for_status())
@@ -79,9 +85,7 @@ class AutoDownloader:
     def download(self, file_name, url: str):
         print(f"Downloading {file_name} from {url}")
         
-        if self.auth != None: res = requests.get(url, auth=self.auth)
-        else:
-            res = requests.get(url)
+        res = self.get(url)
         
         if (res.status_code != requests.codes.ok): sys.exit(res.raise_for_status())
 
@@ -110,7 +114,8 @@ class AutoDownloader:
         
         return
     
-    def downloadWebPage(self, to_pdf=True):
+    def downloadWebPage(self, url: str, to_pdf=True):
+        
         return
 
 ### Helper Functions 
