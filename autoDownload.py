@@ -134,48 +134,11 @@ def test_mode():
     downloader.downloadFiles()
     return 
 
-def get_user_inputs(test=False):
-    if (test):
-        tgt_url = "https://prog-crs-dev.ust.hk/ugprog/2021-22/CPEG"         # HKUST CPEG Major requirement
-        os.mkdir("./auto_download")
-        download_path = "./auto_download"
-        
-    Finish_Asking = False
-    while not Finish_Asking:
-        tgt_url = input("Give me ur URL: ")
-        
-        if len(tgt_url) < 1:
-            print("Error: URL not Valid.")
-            continue
-        
-        download_path = input("Give me ur download path: ")
-        if len(tgt_url) < 1:
-            print("Error: path not Valid.")
-            continue
-        elif(not os.path.exists(download_path)):
-            print("Error: path does not exist.")
-            continue
-    
-        Finish_Asking = True
-    
-    return tgt_url, download_path
-
 ### main function
     
 def main():
-    test_mode = input("Would you like to test this programme? (0/1) ")
-    tgt_url, download_path = get_user_inputs(test=test_mode)
-    
-    if (not tgt_url.startswith("https://")): tgt_url = tgt_url
-    downloader = AutoDownloader(tgt_url, download_path)
-    
-    fileTypes = [".pdf"]
-    for fileType in fileTypes:
-        downloader.findLinks(fileType)
-    
-    downloader.downloadFiles()
-    
-    return 
+    print("Please use the command: 'python main.py test' to test the code.")
+    print("or use the command: 'python main.py download <fileType> <url>' to download files from url.")
 
 if __name__ == "__main__":
     main()
