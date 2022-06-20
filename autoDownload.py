@@ -47,7 +47,12 @@ class AutoDownloader:
             res = requests.get(url)
         
         return res
-
+    
+    def obtain_HTTPError(self, res:requests.Response) -> str:
+        if res.ok: return ""
+        soup = bs(res.content, features="lxml")
+        return soup.find("title").text
+        
     def findLinks(self, fileType) -> None:
         
         res = self.get(self.tgt_url)
@@ -82,17 +87,20 @@ class AutoDownloader:
 
         return 
     
-    def download(self, file_name, url: str):
-        print(f"Downloading {file_name} from {url}")
+    def download(self, file_name, url: str) -> str:
+        print(f"Downloading {file_name} from {url}", end=" ")
         
         res = self.get(url)
         
-        if (res.status_code != requests.codes.ok): sys.exit(res.raise_for_status())
+        if (res.status_code != requests.codes.ok): 
+            print(f"Fail ({self.obtain_HTTPError(res)})")
+            return
 
         with open(f"{self.download_path}/{file_name}", "wb") as f:                # need modify
             for chunk in res.iter_content(chunk_size=8192):
                 if chunk: f.write(chunk) 
-                
+        
+        print("Success")
         return
     
     def downloadFiles(self):
