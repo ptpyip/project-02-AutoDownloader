@@ -78,6 +78,9 @@ class AutoDownloader:
             
             self.num_of_files += 1 
             return
+        
+        elif (self.tgt_url.endswith(".html")):
+            self.tgt_url = self.tgt_url[:self.tgt_url.rfind('/')+1]
 
         # else: 
         soup = bs(res.content, features="lxml")
