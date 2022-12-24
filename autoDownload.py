@@ -10,6 +10,7 @@ import json
 import os
 import sys
 
+
 ### Class helper function
 def mkNewDir(download_path: str) -> OSError:
     if os.path.exists(download_path): return None
@@ -19,14 +20,20 @@ def mkNewDir(download_path: str) -> OSError:
         return None
     except OSError as error:
         return error
+
     
-def arg_is_valid(fileType, tgt_url) -> bool:
-    fileTypes = ["pdf", "pptx"]
-    if fileType not in fileTypes: return False
-    return requests.get(tgt_url).ok 
+def fileType_is_valid(fileType) -> bool:
+    fileTypes = ["pdf", "pptx", "zip", "all"]
+    return fileType in fileTypes 
+
+def auth_reqd(tgt_url) -> bool:
+    return requests.get(tgt_url).status_code == "401"
 
 def check_auth(tgt_url, auth):
     return requests.get(tgt_url, auth=auth).ok 
+
+def access_success(tgt_url):
+    return requests.get(tgt_url).status_code.ok
 
 ### downloader class 
 class AutoDownloader:

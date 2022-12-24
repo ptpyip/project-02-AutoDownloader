@@ -15,8 +15,12 @@ def download(file_type: str, tgt_url: str, folder_name: str = typer.Option(None,
     
     if (not tgt_url.startswith("https://")): tgt_url = "https://" + tgt_url
     
+    if not autoDownload.fileType_is_valid(file_type):
+        typer.echo("Error: invlid argument (file type)")
+        raise typer.Exit(code=1)
+    
     auth = ()
-    if not autoDownload.arg_is_valid(file_type, tgt_url):
+    if autoDownload.auth_reqd(tgt_url):
         userName = typer.prompt("User Name")
         pasword = typer.prompt("Password", hide_input=True)
         auth = (userName, pasword)
@@ -26,9 +30,11 @@ def download(file_type: str, tgt_url: str, folder_name: str = typer.Option(None,
             raise typer.Exit(code=1)
     
     
+    
     typer.echo("success")
     downloader = autoDownload.AutoDownloader(tgt_url, download_path)
     downloader.setAuth(auth)
+    
     
     downloader.findLinks(f".{file_type}")
     downloader.downloadFiles()
